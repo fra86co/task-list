@@ -18,7 +18,7 @@ public final class TaskList implements Runnable {
 
     private long lastId = 0;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter out = new PrintWriter(System.out);
         new TaskList(in, out).run();
@@ -72,13 +72,7 @@ public final class TaskList implements Runnable {
     }
 
     private void show() {
-        for (Map.Entry<String, List<Task>> project : tasks.entrySet()) {
-            out.println(project.getKey());
-            for (Task task : project.getValue()) {
-                out.printf("    [%c] %d: %s%n", (task.isDone() ? 'x' : ' '), task.getId(), task.getDescription());
-            }
-            out.println();
-        }
+        new ShowCommand(this.tasks, TaskList.this.out).execute();
     }
 
     private void add(String commandLine) {
@@ -93,7 +87,7 @@ public final class TaskList implements Runnable {
     }
 
     private void addProject(String name) {
-        tasks.put(name, new ArrayList<Task>());
+        tasks.put(name, new ArrayList<>());
     }
 
     private void addTask(String project, String description) {
@@ -146,4 +140,5 @@ public final class TaskList implements Runnable {
     private long nextId() {
         return ++lastId;
     }
+
 }
