@@ -1,5 +1,6 @@
 package com.codurance.training.tasks;
 
+import com.codurance.training.command.ShowCommand;
 import org.junit.Test;
 
 import java.io.*;
