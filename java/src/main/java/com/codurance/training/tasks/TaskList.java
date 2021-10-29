@@ -1,6 +1,7 @@
 package com.codurance.training.tasks;
 
 import com.codurance.training.command.AddCommand;
+import com.codurance.training.command.CheckCommand;
 import com.codurance.training.command.ShowCommand;
 
 import java.io.BufferedReader;
@@ -79,26 +80,12 @@ public final class TaskList implements Runnable {
         new AddCommand(TaskList.this.tasks, out).invoke(commandLine);
     }
 
-    private void check(String idString) {
-        setDone(idString, true);
+    private void check(String taskId) {
+        new CheckCommand(TaskList.this.out, TaskList.this.tasks).invoke(taskId, true);
     }
 
-    private void uncheck(String idString) {
-        setDone(idString, false);
-    }
-
-    private void setDone(String idString, boolean done) {
-        int id = Integer.parseInt(idString);
-        for (Map.Entry<String, List<Task>> project : tasks.entrySet()) {
-            for (Task task : project.getValue()) {
-                if (task.getId() == id) {
-                    task.setDone(done);
-                    return;
-                }
-            }
-        }
-        out.printf("Could not find a task with an ID of %d.", id);
-        out.println();
+    private void uncheck(String taskId) {
+        new CheckCommand(TaskList.this.out, TaskList.this.tasks).invoke(taskId, false);
     }
 
     private void help() {
