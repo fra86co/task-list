@@ -1,9 +1,6 @@
 package com.codurance.training.tasks;
 
-import com.codurance.training.command.AddCommand;
-import com.codurance.training.command.CheckCommand;
-import com.codurance.training.command.HelpCommand;
-import com.codurance.training.command.ShowCommand;
+import com.codurance.training.command.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,19 +50,19 @@ public final class TaskList implements Runnable {
         String command = commandRest[0];
         switch (command) {
             case "show":
-                show();
+                new ShowCommand(this.tasks, this.out).execute();
                 break;
             case "add":
-                add(commandRest[1]);
+                new AddCommand(this.tasks, out).invoke(commandRest[1]);
                 break;
             case "check":
-                check(commandRest[1]);
+                new CheckCommand(this.out, this.tasks).invoke(commandRest[1], true);
                 break;
             case "uncheck":
-                uncheck(commandRest[1]);
+                new CheckCommand(this.out, this.tasks).invoke(commandRest[1], false);
                 break;
             case "help":
-                help();
+                new HelpCommand(out).invoke();
                 break;
             default:
                 error(command);
@@ -73,29 +70,8 @@ public final class TaskList implements Runnable {
         }
     }
 
-    private void show() {
-        new ShowCommand(this.tasks, TaskList.this.out).execute();
-    }
-
-    private void add(String commandLine) {
-        new AddCommand(TaskList.this.tasks, out).invoke(commandLine);
-    }
-
-    private void check(String taskId) {
-        new CheckCommand(TaskList.this.out, TaskList.this.tasks).invoke(taskId, true);
-    }
-
-    private void uncheck(String taskId) {
-        new CheckCommand(TaskList.this.out, TaskList.this.tasks).invoke(taskId, false);
-    }
-
-    private void help() {
-        new HelpCommand(out).invoke();
-    }
-
     private void error(String command) {
-        out.printf("I don't know what the command \"%s\" is.", command);
-        out.println();
+        new ErrorCommand(TaskList.this.out).invoke(command);
     }
 
 }
